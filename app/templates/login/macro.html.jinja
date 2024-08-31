@@ -6,7 +6,21 @@
 </div>
 <div class="input-group mb-3">
   {{ input_macro("password", "Пароль", "password", true) }}
-  <button _="on click remove .bi-eye on #eye"
+  <button _="
+    on click 
+      if #password.type == 'text' 
+        remove .bi-eye-slash from #eye 
+        then add .bi-eye to #eye 
+        then set #password.type to 'password' 
+        then set #new_pswd.type to 'password' 
+        then set #conf_pswd.type to 'password' 
+      else 
+        remove .bi-eye from #eye 
+        then add .bi-eye-slash to #eye 
+        then set #password.type to 'text' 
+        then set #new_pswd.type to 'text' 
+        then set #conf_pswd.type to 'text'
+    end"
     class="btn btn-outline-secondary"
     type="button"
     tabindex="-1"
