@@ -1,0 +1,62 @@
+{% macro check_tab_macro(person_id, checks = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/checks.html.jinja" import check_form_macro %}
+
+{% set check_items = {
+    'workplace': 'Проверка по местам работы',
+    'document': 'Проверка паспорта',
+    'inn': 'Проверка ИНН',
+    'debt': 'Проверка задолженностей',
+    'bankruptcy': 'Проверка банкротства',
+    'bki': 'Проверка Кредитной истории',
+    'courts': 'Проверка судебных дел',
+    'affilation': 'Проверка аффилированности',
+    'terrorist': 'Проверка террористов',
+    'mvd': 'Проверка в розыск',
+    'internet': 'Проверка в открытых источниках',
+    'cronos': 'Проверка в Кронос',
+    'additional': 'Дополнительная информация',
+    'comment': 'Комментарии',
+    'conclusion': 'Результат',
+    'username': 'Сотрудник',
+} %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("checks-0") %}
+    {{'Добавить запись'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="checks-0">
+    {{ check_form_macro(person_id, needs_id = false) }}
+  </div>
+{% endif %}
+
+{% if checks %}
+  {% for check in checks %}
+    <div  class="card card-body mb-3" id="{{'checks-' + check['id']|string}}">
+      <p class="fs-5 fw-medium text-primary p-1">
+        {{ "Проверка кандидата ID#" + (check['id']|string) }}
+      </p>
+
+      {% for key, value in check_items.items()%}
+        {% call label_macro(value) %}
+          {{ check[key] }}
+        {% endcall %}
+      {% endfor %}
+
+      {% call label_macro("Дата проверки'") %}
+        {{ check['created'].strftime("%d.%m.%Y") }}
+      {% endcall %}
+
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("checks", check['id']|string, upload=True) }}
+      {% endif %}
+    </div>
+  {% endfor %}
+
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

@@ -1,0 +1,5 @@
+{% from "/profile/macros/divs/poligrafs.html.jinja" import poligraf_tab_macro %}
+
+{% set id = id | default(0) %}
+{% set poligrafs = items | default([]) %}
+{{ poligraf_tab_macro(id, poligrafs = poligrafs) }}

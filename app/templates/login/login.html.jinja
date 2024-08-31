@@ -1,0 +1,26 @@
+{% from "elements.html.jinja" import btn_group_macro %}
+{% from "/login/macro.html.jinja" import logopass_macro %}
+
+<div class="text-opacity-85 text-primary p-3">
+  <h3>Вход в систему</h3>
+</div>
+<form 
+  class="form form-check" 
+  method="post" 
+  action="{{ url_for('route.login', action='login') }}"
+>
+  {{ logopass_macro() }}
+  <div class="mb-2">
+    <button
+      class="btn btn-link"
+      hx-get="/auth/password"
+      hx-trigger="click"
+      hx-target="#login-content"
+      hx-swap="innerHTML"
+      tabindex="-1"
+    >
+      Изменить пароль
+    </button>
+  </div>
+  {{ btn_group_macro(offset="0") }}
+</form>

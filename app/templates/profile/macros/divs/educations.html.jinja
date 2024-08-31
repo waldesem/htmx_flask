@@ -1,0 +1,42 @@
+{% macro education_div_macro(id, educations = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/educations.html.jinja" import education_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("education-0") %}
+    {{'Добавить образование'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="educations-0">
+    {{ education_form_macro(id|string) }}
+  </div>
+{% endif %}
+
+{% if educations %}
+  {% for education in educations %}
+    <div  class="card card-body mb-3" id="{{'educations-' + education['id']|string}}">
+      {% set edu = [
+        ["Тип образования", education['view']],
+        ["Учебное заведение", education['institution']],
+        ["Год окончания", education['finished']],
+        ["Специальность", education['specialty']],
+      ]%}
+
+      {% for values in edu %%}
+        {% call label_macro(values[0]) %}
+          {{ values[1] }}
+        {% endcall %}
+      {% endfor %}
+
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("educations", education['id']|string) }}
+      {% endif %}
+    </div>
+  {% endfor %}
+
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

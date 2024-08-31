@@ -1,0 +1,27 @@
+{% macro investigation_form_macro(id, investigation = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, textarea_macro, btn_group_macro %}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='investigations', item_id=id) }}"
+  hx-target="#investigations"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=investigation['id']) }}
+  {% endif %}
+  
+  {% call label_macro("Тема проверки*") %}
+  {{ input_macro("theme", "Тема проверки*", required=true, value=investigation['theme']) }}
+  {% endcall %}
+
+  {% call label_macro("Информация*") %}
+  {{ textarea_macro("info", "Информация*", investigation['info']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'investigations', id = id) }}
+</form>
+{% endmacro %}

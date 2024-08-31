@@ -1,0 +1,17 @@
+{% from "elements.html.jinja" import input_macro %}
+
+{% macro logopass_macro() %}
+<div class="mb-3">
+  {{ input_macro("login", "Логин", "text", true) }}
+</div>
+<div class="input-group mb-3">
+  {{ input_macro("password", "Пароль", "password", true) }}
+  <button _="on click remove .bi-eye on #eye"
+    class="btn btn-outline-secondary"
+    type="button"
+    tabindex="-1"
+  >
+    <i class="bi bi-eye" id="eye"></i>
+  </button>
+</div>
+{% endmacro %} 

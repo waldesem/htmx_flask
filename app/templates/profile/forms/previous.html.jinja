@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/previous.html.jinja" import previous_form_macro %}
+
+{% set id = id | default(0) %}
+{% set previous = item | default([]) %}
+{{ previous_form_macro(id, previous) }}

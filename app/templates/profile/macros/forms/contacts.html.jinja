@@ -1,0 +1,28 @@
+{% macro contact_form_macro(id, contact = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, select_macro, btn_group_macro %}
+{% set options = ["Телефон", "Электронная почта", "Другое"] %}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='contacts', item_id=id) }}"
+  hx-target="#contacts"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=contact['id']) }}
+  {% endif %}
+
+  {% call label_macro("Вид контакта*") %}
+    {{ select_macro("view", options, required=true, value=contact['view']) }}
+  {% endcall %}
+
+  {% call label_macro("Контакт*") %}
+    {{ input_macro("contact", "Контакт*", required=true, value=contact['contact']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'contacts', id = id) }}
+</form>
+
+{% endmacro %}

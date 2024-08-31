@@ -1,0 +1,4 @@
+{% from "profile/macros/forms/persons.html.jinja" import resume_form_macro %}
+
+{% set resume = item | default([]) %}
+{{ resume_form_macro(resume) }}

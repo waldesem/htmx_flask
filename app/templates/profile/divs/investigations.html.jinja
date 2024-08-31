@@ -1,0 +1,5 @@
+{% from "/profile/macros/divs/investigations.html.jinja" import investigation_tab_macro %}
+
+{% set id = id | default(0) %}
+{% set investigations = items | default([]) %}
+{{ investigation_tab_macro(id, investigations = investigations) }}

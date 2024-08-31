@@ -1,0 +1,52 @@
+{% macro anketa_tab_macro(person) %}
+
+{% from "profile/macros/divs/persons.html.jinja" import resume_div_macro %}
+{% from "profile/macros/divs/staffs.html.jinja" import staff_div_macro %}
+{% from "profile/macros/divs/workplaces.html.jinja" import work_div_macro %}
+{% from "profile/macros/divs/educations.html.jinja" import education_div_macro %}
+{% from "profile/macros/divs/affilations.html.jinja" import affilation_div_macro %}
+{% from "profile/macros/divs/previous.html.jinja" import prev_div_macro %}
+{% from "profile/macros/divs/relations.html.jinja" import relation_div_macro %}
+{% from "profile/macros/divs/addresses.html.jinja" import address_div_macro %}
+{% from "profile/macros/divs/contacts.html.jinja" import contact_div_macro %}
+{% from "profile/macros/divs/documents.html.jinja" import document_div_macro %}
+
+{% set accordion = {
+  'persons': ['Резюме', resume_div_macro(person.persons)],
+  'staffs': ['Должности', staff_div_macro(person.persons.id, person.staffs)],
+  'workplaces': ['Работа', work_div_macro(person.persons.id, person.workplaces)],
+  'educations': ['Образование', education_div_macro(person.persons.id, person.educations)],
+  'affilations': ['Аффилированность', affilation_div_macro(person.persons.id, person.affilations)],
+  'previous': ['Предыдущие имена', prev_div_macro(person.persons.id, person.previous)],
+  'relations': ['Связи', relation_div_macro(person.persons.id, person.relations)],
+  'addresses': ['Адреса', address_div_macro(person.persons.id, person.addresses)],
+  'contacts': ['Контакты', contact_div_macro(person.persons.id, person.contacts)],
+  'documents': ['Документы', document_div_macro(person.persons.id, person.documents)],
+} %}
+
+<div class="accordion" id="profile">
+  {% for key, value in accordion.items() %}
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button 
+        class="accordion-button collapsed fw-semibold" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="{{'#accordion-' + key}}"
+      >
+        {{ value[0] }}
+      </button>
+    </h2>
+    <div 
+      id="{{'accordion-' + key}}"
+      class="accordion-collapse collapse {{ 'show' if key == 'persons' }}" 
+    >
+      <div class="accordion-body" id="{{ key }}">
+        {{ value[1] }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endmacro %}

@@ -1,0 +1,46 @@
+{% macro work_div_macro(id, workplaces = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/workplaces.html.jinja" import work_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("workplaces-0") %}
+    {{'Добавить работу'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="workplaces-0">
+    {{ work_form_macro(id) }}
+  </div>
+{% endif %}
+
+{% if workplaces %}
+  {% for workplace in workplaces %}
+    <div  class="card card-body mb-3" id="{{'workplaces-' + workplace['id']|string}}">
+
+      {% set work = {
+        "now_work": 'Да' if workplace['now_work'] else 'Нет',
+        "starts": workplace['starts'],
+        "finished": workplace['finished'] if workplace['finished'] else 'По настоящее время',
+        "workplace": workplace['workplace'],
+        "position": workplace['position'],
+        "addresses": workplace['addresses'],
+        "reason": 'Неизвестна' if not workplace['reason'] else workplace['reason'],
+      }%}
+
+      {% for label, values in work.items() %}
+        {% call label_macro(label) %}
+          {{ values }}
+        {% endcall %}
+      {% endfor %}
+
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("workplaces", workplace['id']|string)}}
+      {% endif %}
+    </div>
+  {% endfor %}
+
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

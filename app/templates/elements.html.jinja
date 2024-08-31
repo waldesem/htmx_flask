@@ -1,0 +1,91 @@
+{% macro label_macro(label) %}
+<div class="row mb-3">
+  <div class="col-2">
+    {{ label }}
+  </div>
+  <div class="col-10 text-break">
+    {{ caller() }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro input_macro(name, placeholder, type='text', required=false, value='') %}
+<input
+  class="form-control"
+  id="{{ name }}"
+  name="{{ name }}"
+  placeholder="{{ placeholder }}"
+  type="{{ type }}"
+  {% if required %}required{% endif %}
+  value="{{ value }}"
+/>
+{% endmacro %} 
+
+{% macro textarea_macro(name, placeholder, text='') %}
+<textarea
+  class="form-control"
+  id="{{ name }}"
+  name="{{ name }}"
+  placeholder="{{ placeholder }}"
+  rows="3"
+>{{ text }}</textarea>
+{% endmacro %}
+
+{% macro select_macro(name, options, required=false, disabled=false, value='') %}
+<select
+  class="form-select"
+  id="{{ name }}"
+  name="{{ name }}"
+  {% if required %}required{% endif %}
+  {% if disabled %}disabled{% endif %}
+>
+  <option selected>{{ value }}</option>
+  {% for option in options %}
+  <option value="{{ option }}">{{ option }}</option>
+  {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro switch_macro(name) %}
+<div class="form-check form-switch">
+  <input
+    class="form-check-input"
+    id="{{ name }}"
+    name="{{ name }}"
+    type="checkbox"
+  />
+</div>
+{% endmacro %}
+
+{% macro btn_group_macro(offset='offset-2', size='md', cancel = false, item = '', id = '') %}
+<div class="{{ offset }} py-3">
+  <div class="btn-group btn-group-{{size}}" role="group">
+    <button
+      class="btn btn-md btn-outline-primary"
+      name="submit"
+      type="submit"
+    >Принять
+    </button>
+    <button
+      class="btn btn-md btn-outline-danger"
+      name="reset"
+      type="reset"
+    >
+      Очистить
+    </button>
+    {% if cancel %}
+    <button
+      class="btn btn-md btn-outline-secondary"
+      name="cancel"
+      type="button"
+      hx-get="{{ url_for('route.get_item_id', item=item, action='divs', item_id=id) }}"
+      hx-trigger="click"
+      hx-target="#{{item}}"
+      hx-swap="innerHTML"
+    >
+      Отмена
+    </button>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

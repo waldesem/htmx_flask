@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/poligrafs.html.jinja" import poligraf_form_macro %}
+
+{% set id = id | default(0) %}
+{% set poligraf = item | default([]) %}
+{{ poligraf_form_macro(id, poligraf) }}

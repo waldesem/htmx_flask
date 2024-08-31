@@ -1,0 +1,19 @@
+{% macro photo_card_macro(person_id) %}
+
+<div class="card" style="width: 16rem">
+  <img 
+    src="{{ url_for('route.get_image', person_id=person_id) }}" class="card-img-top"
+  />
+  {% if session['user']['role'] == 'user' %}
+  <div class="card-body text-center d-flex justify-content-center" id="card-body">
+    <label
+      for="image" 
+      class="text-primary"
+      style="cursor: pointer; text-decoration: underline;"
+    >
+      <i class="bi bi-cloud-arrow-up">Загрузить</i>
+    </label>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

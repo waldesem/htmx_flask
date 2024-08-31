@@ -1,0 +1,5 @@
+{% from "profile/macros/divs/staffs.html.jinja" import staff_div_macro %}
+
+{% set id = id | default(0) %}
+{% set staffs = items | default([]) %}
+{{ staff_div_macro(id, staffs = staffs) }}

@@ -1,0 +1,28 @@
+{% macro address_form_macro(id, address = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, select_macro, btn_group_macro %}
+{% set options = ["Адрес регистрации", "Адрес проживания", "Другое"] %}
+
+<form 
+  class="form form-check"
+  hx-post="{{ url_for('route.post_item_id', item='addresses', item_id=id) }}"
+  hx-target="#addresses"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=address['id']) }}
+  {% endif %}
+  
+  {% call label_macro("Вид адреса*") %}
+    {{ select_macro("view", options, required=true, value=address['view']) }}
+  {% endcall %}
+
+  {% call label_macro("Адрес*") %}
+    {{ input_macro("address", "Адрес*", required=true, value=address['address']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'addresses', id = id) }}
+</form>
+
+{% endmacro %}

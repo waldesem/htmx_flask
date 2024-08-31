@@ -1,0 +1,30 @@
+{% extends "base.html.jinja" %}
+
+{% from "elements.html.jinja" import input_macro %}
+
+{% block title %}
+Вход в систему
+{% endblock %}
+
+{% block body %}
+<div class="container py-3" style="width: fit-content;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+<div class="container" style="width: fit-content;">
+  <div class="text-opacity-85 text-danger py-3">
+    <h3>StaffSec - кадровая безопасность</h3>
+  </div>
+  <div class="border border-danger rounded p-5" id="login-content">
+    {% include "login/login.html.jinja" %}
+  </div>
+</div>
+{% endblock %}

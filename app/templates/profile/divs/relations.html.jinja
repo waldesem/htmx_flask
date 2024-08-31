@@ -1,0 +1,5 @@
+{% from "profile/macros/divs/relations.html.jinja" import relation_div_macro %}
+
+{% set id = id | default(0) %}
+{% set relations = items | default([]) %}
+{{ relation_div_macro(id, relations = relations) }}

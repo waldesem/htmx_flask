@@ -1,0 +1,106 @@
+{% from "elements.html.jinja" import select_macro %}
+
+{% set thead = [
+  ["5%", "#"], 
+  ["13%", "Пользователь"], 
+  ["11%", "Логин"], 
+  ["13%", "Регион"], 
+  ["13%", "Роль"], 
+  ["10%", "Обновлен"], 
+  ["7%", "Попытки"], 
+  ["7%", "Блок"], 
+  ["7%", "Удален"], 
+  ["7%", "Изменение"]
+] %}
+
+{% set dropdown_menu = [
+  ["url_for('route.take_user', user_id=user.id, item='block')", "Блокировка"], 
+  ["url_for('route.take_user', user_id=user.id, item='drop')", "Сброс пароля"], 
+  ["url_for('route.take_user', user_id=user.id, item='delete')", "Удаление"]
+] %}
+
+<div class="row py-3">  
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        {% for item in thead %}
+        <th width="{{ item[0] }}">{{ item[1] }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="10">
+          <table
+            class="table table-sm table-hover align-middle"
+            style="max-height: 50vh; overflow-y: auto;"
+          >
+            <caption class="caption-bottom text-left">Список пользователей</caption>
+            <tbody>
+              {% for user in users %}
+              <tr>
+                <td width="5%">{{ user.id }}</td>
+                <td width="13%" >
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-link text-secondary dropdown-toogle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                    >
+                    {{ user.fullname }}
+                    </button>
+                      <ul class="dropdown-menu">
+                        {% for item in dropdown_menu %}
+                        <li>
+                          <button
+                            class="btn btn-link dropdown-item"
+                            hx-get="{{ item[0] }}"
+                            hx-trigger="click"
+                            hx-target="#users-info"
+                            hx-swap="innerHTML"
+                          >
+                            {{ item[1] }}
+                          </button>
+                        </li>
+                      </ul>
+                  </div>
+                </td>
+                <td width="11%">{{ user.username }}</td>
+                <td width="13%">
+                  <form 
+                    hx-post="{{ url_for('route.take_user', user_id=user.id) }}"
+                    hx-trigger="change"
+                    hx-target="#users-info"
+                    hx-swap="innerHTML"
+                    class="form form-check" 
+                    style="padding-left: 0;"
+                  >
+                    {{ select_macro("region", ["Главный офис", "РЦ Юг", "РЦ Запад", "РЦ Урал", "РЦ Восток"], value=user.region) }}
+                  </form>
+                </td>
+                <td width="13%">
+                  <form 
+                    hx-post="{{ url_for('route.take_user', user_id=user.id) }}"
+                    hx-trigger="change"
+                    hx-target="#users-info"
+                    hx-swap="innerHTML"
+                    class="form form-check"
+                    style="padding-left: 0;" 
+                  >
+                    {{ select_macro("role", ["admin", "user", "guest"], value=user.role) }}
+                  </form>
+                </td>
+                <td width="10%">{{ user.created.strftime("%d.%m.%Y") }}</td>
+                <td width="7%">{{ user.attempt }}</td>
+                <td width="7%">{{ "Да" if user.blocked else "Нет" }}</td>
+                <td width="7%">{{ "Да" if user.deleted else "Нет" }}</td>
+                <td width="7%">{{ "Да" if user.change_pswd else "Нет" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

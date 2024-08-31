@@ -1,0 +1,46 @@
+{% from "elements.html.jinja" import input_macro, select_macro %}
+
+<div class="text-opacity-85 text-danger py-5">
+  <h3>Информация</h3>
+</div>
+
+<div class="row mb-5">
+  <table class="'table table-hover table-responsive align-middle py-3'">
+    <caption>Решения по кандидатам</caption>
+    <thead>
+      <tr>
+        <th width="45%">Решение</th>
+        <th>Количество</th>
+      </tr>
+    </thead>
+    <tbody id="info-table">
+      {% for row in checks %}
+      <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.take_info') }}"
+  hx-target="#info-table"
+  hx-swap="innerHTML"
+>
+  <div class="row">
+    <label class="col-form-label col-md-1" for="region"> Регион: </label>
+    <div class="col-md-3">
+      {{ select_macro("region", ["Главный офис", "РЦ Юг", "РЦ Запад", "РЦ Урал", "РЦ Восток"], required=True, disabled=session["user"]["region"] != "Главный офис", value=session["user"]["region"]) }}
+    </div>
+    <label class="col-form-label col-md-1" for="start"> Период: </label>
+    <div class="col-md-2">
+      {{ input_macro("start", type="date", required=True, value=start) }}
+    </div>
+    <div class="col-md-2">
+      {{ input_macro("end", type="date", required=True, value=end) }}
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-outline-primary">Показать</button>
+    </div>
+  </div>
+</form>

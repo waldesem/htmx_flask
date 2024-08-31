@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/workplaces.html.jinja" import workplace_form_macro %}
+
+{% set id = id | default(0) %}
+{% set workplace = item | default([]) %}
+{{ workplace_form_macro(id, workplace) }}

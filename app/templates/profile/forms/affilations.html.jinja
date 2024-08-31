@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/affilations.html.jinja" import affilation_form_macro %}
+
+{% set id = id | default(0) %}
+{% set affilation = item | default([]) %}
+{{ affilation_form_macro(id, affilation) }}

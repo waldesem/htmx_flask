@@ -1,0 +1,37 @@
+{% macro address_div_macro(person_id, addresses = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/addresses.html.jinja" import address_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("addresses-0") %}
+    {{'Добавить адрес'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="addresses-0">
+    {{ address_form_macro(person_id, needs_id = false) }}
+  </div>
+{% endif %}
+
+{% if addresses %}
+  {% for address in addresses %}
+    <div class="card card-body mb-3" id="{{'addresses-' + address['id']|string}}">
+      {% call label_macro("Тип адреса") %}
+        {{ address['view'] }}
+      {% endcall %}
+
+      {% call label_macro("Адрес") %}
+        {{ address['addresses'] }}
+      {% endcall %}
+
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("address", address['id']|string) }}
+      {% endif %}
+    </div>
+  {% endfor %}
+  
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

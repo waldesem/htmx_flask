@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/inquiries.html.jinja" import inquiry_form_macro %}
+
+{% set id = id | default(0) %}
+{% set inquiry = item | default([]) %}
+{{ inquiry_form_macro(id, inquiry) }}

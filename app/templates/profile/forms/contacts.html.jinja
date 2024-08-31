@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/contacts.html.jinja" import contact_form_macro %}
+
+{% set id = id | default(0) %}
+{% set contact = item | default([]) %}
+{{ contact_form_macro(id, contact) }}

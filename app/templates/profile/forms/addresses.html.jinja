@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/addresses.html.jinja" import address_form_macro %}
+
+{% set id = id | default(0) %}
+{% set address = item | default([]) %}
+{{ address_form_macro(id, address) }}

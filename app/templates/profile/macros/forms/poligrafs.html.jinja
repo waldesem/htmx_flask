@@ -1,0 +1,27 @@
+{% macro poligraf_form_macro(id, poligraf = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, textarea_macro, select_macro, btn_group_macro %}
+{% set options = ["Проверка кандидата", "Служебная проверка", "Служебное расследование", "Плановое мероприятие"] %}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='poligrafs', item_id=id) }}"
+  hx-target="#poligrafs"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=poligraf['id']) }}
+  {% endif %}
+
+  {% call label_macro("Тема проверки*") %}
+    {{ select_macro("theme", options, required=true, value=poligraf['theme']) }}
+  {% endcall %}
+
+  {% call label_macro("Результат*") %}
+    {{ textarea_macro("results", "Результат*", poligraf['results']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'poligrafs', id = id) }}
+</form>
+{% endmacro %}

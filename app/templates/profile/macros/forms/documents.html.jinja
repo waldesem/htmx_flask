@@ -1,0 +1,37 @@
+{% macro document_form_macro(id, document = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, select_macro, btn_group_macro %}
+
+{% set options = ["Паспорт", "Загранпаспорт", "Другое"] %}
+
+{% set doc = {
+  "series": ["Серия документа", false, "text"],
+  "digit": ["Номер документа", true, "text"],
+  "agency": ["Кем выдан", true, "text"],
+  "issue": ["Дата выдачи", false, "number"],
+}%}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='documents', item_id=id) }}"
+  hx-target="#documents"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=document['id']) }}
+  {% endif %}
+
+  {% call label_macro("Вид документа*") %}
+    {{ select_macro("view", options, required=true, value=document['view']) }}
+  {% endcall %}
+
+  {% for label, values in doc.items() %}
+    {% call label_macro(label) %}
+      {{ input_macro(label, values[0], type=values[2], value=document[label], required=values[1]) }}
+    {% endcall %}
+  {% endfor %}
+
+  {{ btn_group_macro(cancel = true, item = 'documents', id = id) }}
+</form>
+{% endmacro %}

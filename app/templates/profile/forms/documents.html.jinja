@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/documents.html.jinja" import document_form_macro %}
+
+{% set id = id | default(0) %}
+{% set document = item | default([]) %}
+{{ document_form_macro(id, document) }}

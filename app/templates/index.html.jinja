@@ -1,0 +1,101 @@
+{% extends "base.html.jinja" %}
+
+{% block body %}
+<div class="container-fluid row ps-5" id="container">
+  <div class="col-2 d-print-none">
+    <div class="navbar navbar-expand sticky-top fs-5 p-3">
+      <div class="nav flex-column">
+        <a class="nav-link text-danger fs-3 fw-bold">STAFFSEC FINTECH</a>
+        <hr class="text-info" />
+        <button 
+          class="btn btn-link nav-link active"
+          hx-get="{{ url_for('route.route_personal') }}"
+          hx-trigger="click"
+          hx-target="#staffsec"
+          hx-swap="innerHTML"
+        >
+          Кандидаты
+        </button>
+        <hr class="text-info" />
+        
+        {% if session.user.role == 'user' %}
+        <button
+          class="btn btn-link nav-link active"
+          hx-get="{{ url_for('route.take_resume') }}"
+          hx-trigger="click"
+          hx-target="#staffsec"
+          hx-swap="innerHTML"
+        >
+          Создать
+        </button>
+        <hr class="text-info" />
+        {% endif %}
+
+        <button 
+          class="btn btn-link nav-link active"
+          hx-get="{{ url_for('route.take_info') }}"
+          hx-trigger="click"
+          hx-target="#staffsec"
+          hx-swap="innerHTML"
+          >Информация
+        </button>          
+        <hr class="text-info" />
+
+        {% if session.user.role == 'admin' %}
+        <button
+          class="btn btn-link nav-link active"
+          hx-get="{{ url_for('route.take_users') }}"
+          hx-trigger="click"
+          hx-target="#staffsec"
+          hx-swap="innerHTML"
+        >
+          Пользователи
+        </button>
+        <hr class="text-info" />
+        {% endif %}
+
+        <a 
+          class="btn btn-link nav-link active"
+          href="{{ url_for('route.get_logout') }}">
+          Выход
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-10 pe-5" style="padding-bottom: 5vh;">
+    <div class="sticky-top bg-white d-print-none p-3">
+      <div class="row">
+        <div class="col-10 text-center">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="py-3">
+              {% for category, message in messages %}
+              <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% endwith %}
+        </div>
+        <div class="col-2 text-end text-primary">
+          <i class="bi bi-person-circle fs-5">{{ session.user.username }}</i>
+        </div>
+      </div>
+    </div>
+    <div id="staffsec"
+      hx-get="{{ url_for('route.route_personal') }}"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+      hx-target="#staffsec"
+    >
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block footer %}
+<footer class="d-flex justify-content-center border-top bg-white d-print-none" style="position: fixed; bottom: 0; width: 100%; height: 5vh;">
+  <p class="text-muted mt-2">2024 STAFFSEC FINTECH</p>
+</footer>
+{% endblock %}

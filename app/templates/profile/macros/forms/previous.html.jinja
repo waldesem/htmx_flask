@@ -1,0 +1,32 @@
+{% macro prev_form_macro(id, previous = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, btn_group_macro %}
+
+{% set prev = {
+  "surname": ["Фамилия", true, "text"],
+  "firstname": ["Имя", true, "text"],
+  "patronymic": ["Отчество", false, "text"],
+  "changed": ["Год изменения", false, "number"],
+  "reason": ["Причина изменения", false, "text"],
+}%}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='previous', item_id=id) }}"
+  hx-target="#previous"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=previous['id']) }}
+  {% endif %}
+
+  {% for label, values in prev.items() %}
+    {% call label_macro(label) %}
+      {{ input_macro(label, values[0], type=values[2], value=previous[label], required=values[1]) }}
+    {% endcall %}
+  {% endfor %}
+
+  {{ btn_group_macro(cancel = true, item = 'previous', id = id) }}
+</form>
+{% endmacro %}

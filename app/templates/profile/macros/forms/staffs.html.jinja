@@ -1,0 +1,26 @@
+{% macro staff_form_macro(id, staff = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, textarea_macro, btn_group_macro %}
+  <form
+    class="form form-check" 
+    hx-post="{{ url_for('route.post_item_id', item='staffs', item_id=id) }}"
+    hx-target="#staffs"
+    hx-trigger="submit"
+    hx-swap="innerHTML"
+  >
+    
+    {% if needs_id %}
+      {{ input_macro("id", "ID", type="hidden", value=staff['id']) }}
+    {% endif %}
+    
+    {% call label_macro("Должность*") %}
+      {{ input_macro("position", "Должность", required=true, value=staff['position']) }}
+    {% endcall %}
+
+    {% call label_macro("Подразделение") %}
+      {{ textarea_macro("department", "Подразделение", staff['department']) }}
+    {% endcall %}
+
+    {{ btn_group_macro(cancel = true, item = 'staffs', id = id) }}
+  </form>
+{% endmacro %}  

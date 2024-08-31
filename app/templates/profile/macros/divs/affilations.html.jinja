@@ -1,0 +1,42 @@
+{% macro affilation_div_macro(id, affilations = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/affilations.html.jinja" import affilation_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("affilations") %}
+    {{'Добавить участие'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="affilations">
+    {{ affilation_form_macro(id) }}
+  </div>
+{% endif %}
+
+{% if affilations %}
+  {% for affilation in affilations %}
+
+  <div  class="card card-body mb-3" id="{{'affilations-' + affilation['id']|string}}">
+    {% call label_macro("Тип участия") %}
+      {{ affilation['view'] }}
+    {% endcall %}
+
+    {% call label_macro("Организация") %}
+      {{ affilation['organization'] }}
+    {% endcall %}
+
+    {% call label_macro("ИНН") %}
+      {{ affilation['inn'] }}
+    {% endcall %}
+
+    {% if session['user']['role'] == 'user' %}
+      {{ action_group_macro("affilations", affilation['id']|string) }}
+    {% endif %}
+  </div>
+  {% endfor %}
+
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

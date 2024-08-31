@@ -1,0 +1,36 @@
+{% macro education_form_macro(id, education = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, select_macro, btn_group_macro %}
+{% set options = ["Основное общее", "Среднее общее", "Среднее профессиональное", "Высшее", "Неоконченное высшее образование", "Другое образование"] %}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='educations', item_id=id) }}"
+  hx-target="#educations"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+
+  {% if needs_id %}  
+    {{ input_macro("id", "id", type="hidden", value=education['id']) }}
+  {% endif %}
+
+  {% call label_macro("Уровень образования*") %}
+    {{ select_macro("view", options, required=true, value=education['view']) }}
+  {% endcall %}
+
+  {% call label_macro("Название учебного заведения*") %}
+    {{ input_macro("institution", "Название учебного заведения*", required=true, value=education['institution']) }}
+  {% endcall %}
+
+  {% call label_macro("Год окончания*") %}
+    {{ input_macro("finished", "Год окончания*", type="number", value=education['finished']) }}
+  {% endcall %}
+
+  {% call label_macro("Специальность") %}
+    {{ input_macro("specialty", "Специальность", value=education['specialty']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'educations', id = id) }}
+</form>
+{% endmacro %}

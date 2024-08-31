@@ -1,0 +1,5 @@
+{% from "/profile/macros/divs/inquiries.html.jinja" import inquiry_tab_macro %}
+
+{% set id = id | default(0) %}
+{% set inquiries = items | default([]) %}
+{{ inquiry_tab_macro(id, inquiries = inquiries) }}

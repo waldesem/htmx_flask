@@ -1,0 +1,103 @@
+{% set thread = [
+  ['5%', '#'],
+  ['15%', 'Регион'],
+  ['25%', 'Фамилия Имя Отчество'],
+  ['10%', 'Дата рождения'],
+  ['10%', 'ИНН'],
+  ['10%', 'СНИЛС'],
+  ['10%', 'Обновлено'],
+  ['10%', 'Сотрудник'],
+  ['5%', 'Статус'],
+] %}
+
+<div class="row py-3">
+  <table class="table align-middle table-hover">
+    <caption>
+      <button 
+        class="btn btn-link"
+        hx-post="/index"
+        hx-trigger="click"
+        hx-target="#persons-table"
+        hx-swap="innerHTML"
+        style="text-decoration: none;"
+      >
+        <i class="bi bi-arrow-clockwise">Обновить</i>
+      </button>
+    </caption>
+    <thead>
+      <tr height="50px">
+        {% for th in thread %}
+        <th width="{{ th[0] }}">{{ th[1] }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+      {% for row in candidates %}
+      <tr>
+        <td>{{ row['id'] }}</td>
+        <td>{{ row['region'] }}</td>
+        <td>
+          <button
+            class="btn btn-link text-primary"
+            hx-get="{{ url_for('route.route_profile', person_id=row['id']) }}"
+            hx-trigger="click"
+            hx-target="#staffsec"
+            hx-swap="innerHTML"
+          >
+            {{ row['surname'] }} {{row['firstname']}} {{ row['patronymic' if row['patronymic']] }}
+          </a>
+        </td>
+        <td>{{ row['birthday'].strftime("%d.%m.%Y") }}</td>
+        <td>{{ row['inn'] }}</td>
+        <td>{{ row['snils'] }}</td>
+        <td>{{ row['created'].strftime("%d.%m.%Y") }}</td>
+        <td>{{ row['username'] }}</td>
+        <td class="text-center">
+          {% if row.isbusy %}
+          <div
+            class="spinner-grow spinner-grow-sm text-danger"
+            role="status"
+            title="Проверка"
+          >
+          </div>
+          {% else %}
+          <div class="text-success fs-5" title="Окончено">
+            <i class="bi bi-emoji-smile"></i>
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+  </table>
+</div>
+{% if not candidates|length %}
+<p class="fs-6 taxt-danger">Ничего не найдено</p>
+{% endif %}
+
+<nav class="mb-4">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {{ 'disabled' if not has_prev }}">
+      <button
+        class="page-link"
+        hx-post="{{ url_for('route.route_personal', page=page - 1) }}"
+        hx-trigger="click"
+        hx-target="#persons-table"
+        hx-swap="innerHTML"
+      >
+        <i class="bi bi-chevron-double-left"></i>
+        Назад 
+    </button>
+    </li>
+    <li class="page-item {{ 'disabled' if not has_next }}">
+      <button 
+        class="page-link"
+        hx-post="{{ url_for('route.route_personal', page=page + 1) }}"
+        hx-trigger="click"
+        hx-target="#persons-table"
+        hx-swap="innerHTML"
+      >
+        Вперёд
+        <i class="bi bi-chevron-double-right"></i>
+      </button>
+    </li>
+  </ul>
+</nav>

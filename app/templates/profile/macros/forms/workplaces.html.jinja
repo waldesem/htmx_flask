@@ -1,0 +1,39 @@
+{% macro work_form_macro(id, workplace = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, textarea_macro, switch_macro, btn_group_macro %}
+
+{% set work = {
+  "starts": ["Начало работы", "date"],
+  "finished": ["Окончание работы", "date"],
+  "workplace": ["Место работы", "text"],
+  "position": ["Должность", "text"],
+  "addresses": ["Адрес организации", "text"],
+  "reason": ["Причина увольнения", "text"],
+}%}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='workplaces', item_id=id) }}"
+  hx-target="#workplaces"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=workplace['id']) }}
+  {% endif %}
+  
+  {% call label_macro("Текущая работа*") %}
+    {{ switch_macro("now_work") }}
+  {% endcall %}
+
+  {% for label, values in work.items() %}
+    {% call label_macro(label) %}
+      {{ input_macro(label, values[0], type=values[1], value=workplace[label]) }}
+    {% endcall %}
+  {% endfor %}
+
+  {{ btn_group_macro(cancel = true, item = 'workplaces', id = id) }}
+</form>
+
+{% endmacro %}

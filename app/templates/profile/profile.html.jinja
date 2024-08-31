@@ -1,0 +1,116 @@
+{% from "profile/macros/divs/anketa.html.jinja" import anketa_tab_macro %}
+{% from "profile/macros/divs/checks.html.jinja" import check_tab_macro %}
+{% from "profile/macros/divs/poligrafs.html.jinja" import poligraf_tab_macro %}
+{% from "profile/macros/divs/investigations.html.jinja" import investigation_tab_macro %}
+{% from "profile/macros/divs/inquiries.html.jinja" import inquiry_tab_macro %}
+{% from "profile/macros/divs/photo.html.jinja" import photo_card_macro %}
+
+{% set tabs = {
+  'anketa': ['Анкета', anketa_tab_macro(person)],
+  'checks': ['Проверка', check_tab_macro(person.persons.id, person.checks)],
+  'poligrafs': ['Полиграф', poligraf_tab_macro(person.persons.id, person.poligrafs)],
+  'invesigations': ['Расследования', investigation_tab_macro(person.persons.id, person.investigations)],
+  'inquiries': ['Запросы', inquiry_tab_macro(person.persons.id, person.inquiries)],
+} %}
+
+<div id ="photo-card" class="position-relative">
+  {{ photo_card_macro(person.persons.id) }}
+</div>
+
+<form 
+  class="form form-check"
+  hx-post="{{ url_for('route.post_file', item='image', item_id=person.persons['id']) }}"
+  hx-trigger="change"
+  hx-target="#photo-card"
+  hx-swap="innerHTML"
+  hx-encoding="multipart/form-data"
+>
+  <input
+    class="form-control form-control-sm d-none"
+    name="image" 
+    id="image"
+    type="file"
+    accept="image/jpg, image/jpeg"
+    ref="file"
+    multiple
+  />
+</form>
+
+<div class="text-opacity-85 text-danger pb-5 pt-1 px-3">
+  <h3>{{ person.persons.surname }} {{ person.persons.firstname }} {{ person.persons.patronymic if person.persons.patronymic }}
+  </h3>
+</div>
+
+{% if session['user']['role'] == 'user' %}
+<div class="position-relative">
+  <div class="position-absolute bottom-0 end-0">
+    <button 
+      class="btn btn-link" 
+      hx-get="{{ url_for('route.route_profile', person_id=person.persons['id'], standing = person.persons['isbusy'])  }}" 
+      hx-trigger="click"
+      hx-target="#staffsec"
+      hx-swap="innerHTML"
+    >
+
+      {% if person.persons.isbusy and session['user']['id'] != person.persons['user_id'] %}
+      <div 
+        class="spinner-grow text-danger"
+        role="status"
+      >
+        <div class="badge text-bg-danger text-wrap">
+          Анкета редактируется другим пользователем
+        </div>
+      </div>
+
+      {% elif person.persons.isbusy and session['user']['id'] == person.persons['user_id'] %}
+      <div 
+        class="spinner-grow text-success"
+        role="status"
+      >
+        <div class="badge text-bg-success text-wrap">
+          Анкета редактируется текущим пользователем
+        </div>
+      </div>
+
+      {% else %}
+      <div 
+        class="spinner-grow text-info"
+        role="status"
+      >
+        <div class="badge text-bg-info text-wrap">
+          Анкета никем не редактируется
+        </div>
+      </div>
+      {% endif %}
+    </button>
+  </div>
+</div>
+{% endif %}
+
+<nav>
+  <div class="nav nav-tabs nav-justified d-print-none" role="tablist">
+    {% for key, values in tabs.items() %}
+    <button
+      class="nav-link {{ 'active' if key == 'anketa' }}"
+      data-bs-target="{{'#' + key}}"
+      data-bs-toggle="tab"
+      type="button"
+      role="tab"
+    >
+      {{ values[0] }}
+    </button>
+    {% endfor %}
+  </div>
+</nav>
+<div class="tab-content mb-3">
+  {% for key, values in tabs.items() %}
+  <div
+    id={{key}}
+    class="tab-pane fade {{ 'show active' if key   == 'anketa' }} pt-3"
+    role="tabpanel"
+    tabindex="0"
+  >
+    {{ values[1] }}
+  </div>
+  {% endfor %}
+</div>

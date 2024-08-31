@@ -1,0 +1,47 @@
+{% macro inquiry_tab_macro(id, inquiries = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/inquiries.html.jinja" import inquiry_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("inquiry-0") %}
+    {{'Добавить запись'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="inquiry-0">
+    {{ inquiry_form_macro(id) }}
+  </div>
+{% endif %}
+
+{% if inquiries %}
+  {% for inquiry in inquiries %}
+    <div  class="card card-body mb-3" id="{{'inquiries-' + inquiry['id']|string}}">
+      <p class="fs-5 fw-medium text-primary p-1">
+        {{ "Запрос о сотруднике ID#" + (inquiry['id']|string) }}
+      </p>
+      {% call label_macro("Информация") %}
+        {{ inquiry['info'] }}
+      {% endcall %}
+
+      {% call label_macro("Иннициатор") %}
+        {{ inquiry['origins'] }}
+      {% endcall %}
+
+      {% call label_macro("Сотрудник") %}
+        {{ inquiry['username'] }}
+      {% endcall %}
+
+      {% call label_macro("Дата записи") %}
+        {{ inquiry['created'].strftime("%d.%m.%Y") }} 
+      {% endcall %}
+      
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("inquiries", inquiry['id']|string)}}
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

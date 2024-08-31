@@ -1,0 +1,5 @@
+{% from "profile/macros/forms/staffs.html.jinja" import staff_form_macro %}
+
+{% set id = id | default(0) %}
+{% set staff = item | default([]) %}
+{{ staff_form_macro(id, staff) }}

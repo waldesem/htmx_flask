@@ -1,0 +1,66 @@
+{# collapse header macro #}
+{% macro collapse_header_macro(href) %}
+
+<p>
+  <a
+    class="link-primary"
+    data-bs-toggle="collapse"
+    href="#{{ href }}"
+  >
+    {{ caller() }}
+  </a>
+</p>
+{% endmacro %}
+
+
+{# action group macro #}
+{% macro action_group_macro(item, id, upload=false, target="") %}
+{% from "profile/forms/file.html.jinja" import file_form_macro %}
+
+<div class="border-top py-1">
+  <div class="position-relative d-flex">
+    <div class="position-absolute top-0 start-0">
+      <button
+        class="btn btn-link"
+        type="button"
+        hx-get="{{ url_for('route.get_item_id', item=item, action='form', item_id=id) }}"
+        hx-trigger="click"
+        hx-target="{{ '#{}-{}'.format(item, id) if not target else '#{}'.format(target) }}"
+        hx-swap="innerHTML">
+        <i class="bi bi-pencil-square"> </i>Изменить
+      </button>
+    </div>
+
+    {% if upload %}
+    <div class="position-absolute top-0 start-50">
+      <button class="btn btn-link" type="button">
+        <label
+          for="{{ item + '-file-' + id }}" 
+          style="cursor: pointer; text-decoration: underline;"
+        >
+          <i class="bi bi-cloud-arrow-up"></i>Загрузить
+        </label>
+      </button>
+    </div>
+    {% endif %}
+
+    <div class="position-absolute top-0 end-0">
+      <button 
+        class="btn btn-link" 
+        type="button"
+        hx-get="{{ '/delete/' + item + '/' + id|string }}" 
+        hx-trigger="click"
+        hx-target="#{{ target if target else item }}"
+        hx-confirm="Вы уверены, что хотите удалить эту запись?"
+        hx-swap="innerHTML"
+      >
+        <i class="bi bi-trash"> </i>Удалить
+      </button>
+    </div>
+  </div>
+  {{ file_form_macro(item + '-file-' + id, "/file/" + item + "/" + id, "*") }}
+</div>
+
+{% endmacro %} 
+
+

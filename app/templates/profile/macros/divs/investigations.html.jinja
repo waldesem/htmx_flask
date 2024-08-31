@@ -1,0 +1,48 @@
+{% macro investigation_tab_macro(id, investigations = []) %}
+
+{% from "elements.html.jinja" import label_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+{% from "/profile/macros/forms/investigations.html.jinja" import investigation_form_macro %}
+
+{% if session['user']['role'] == 'user' %}
+  {% call collapse_header_macro("investigation-0") %}
+    {{'Добавить запись'}}
+  {% endcall %}
+  <div class="collapse card card-body mb-3" id="investigation-0">
+    {{ investigation_form_macro(id) }}
+  </div>
+{% endif %}
+
+{% if investigations %}
+  {% for investigation in investigations %}
+    <div  class="card card-body mb-3" id="{{'investigation-' + investigation['id']|string}}">
+      <p class="fs-5 fw-medium text-primary p-1">
+        {{ "Расследование/проверка ID#" + (inquiry['id']|string) }}
+      </p>
+      {% call label_macro("Тема проверки'") %}
+        {{ investigation['theme'] }}
+      {% endcall %}
+
+      {% call label_macro("Информация'") %}
+        {{ investigation['info'] }}
+      {% endcall %}
+
+      {% call label_macro("Сотрудник'") %}
+        {{ investigation['username'] }}
+      {% endcall %}
+
+      {% call label_macro("Дата проверки") %}
+        {{ investigation['created'].strftime("%d.%m.%Y") }}
+      {% endcall %}
+
+      {% if session['user']['role'] == 'user' %}
+        {{ action_group_macro("investigations", investigation['id']|string, upload=True) }}
+      {% endif %}
+    </div>
+  {% endfor %}
+
+{% else %}
+  <div class="text-primary mb-3">Информация не найдена</div>
+{% endif %}
+
+{% endmacro %}

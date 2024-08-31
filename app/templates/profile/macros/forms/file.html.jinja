@@ -1,0 +1,21 @@
+{% macro file_form_macro(name, route, accept = "*") %}
+
+<form 
+  class="form form-check"
+  hx-post="{{ route }}"
+  hx-trigger="change"
+  hx-target="#{{ name }}"
+  hx-swap="innerHTML"
+  hx-encoding="multipart/form-data"
+>
+  <input
+    class="form-control form-control-sm d-none"
+    name="{{ name }}" 
+    id="{{ name }}"
+    type="file"
+    accept="{{ accept }}"
+    ref="file"
+    multiple
+  />
+</form>
+{% endmacro %}

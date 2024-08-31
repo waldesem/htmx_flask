@@ -1,0 +1,49 @@
+{% macro resume_div_macro(resume = {}) %}
+
+{% from "elements.html.jinja" import label_macro, select_macro %}
+{% from "/profile/macro.html.jinja" import collapse_header_macro, action_group_macro %}
+
+{% set resume_list = [
+  ["Фамилия", resume['surname']],
+  ["Имя", resume['firstname']],
+  ["Отчество", resume['patronymic'] if resume['patronymic'] else ""],
+  ["Дата рождения", resume['birthday'].strftime("%d.%m.%Y")],
+  ["Место рождения", resume['birthplace']],
+  ["Гражданство", resume['citizenship']],
+  ["Двойное гражданство", resume['dual']],
+  ["ИНН", resume['inn']],
+  ["СНИЛС", resume['snils']],
+  ["Семейное положение", resume['marital']],
+  ["Дополнительная информация", resume['addition']],
+  ["Пользователь", resume['username']],
+  ["Материалы", resume['destination']],
+] %}
+
+{% call label_macro("Регион") %}
+<form 
+  class="form form-check"
+  hx-post="{{ url_for('route.change_region', person_id=resume['id']) }}"
+  hx-trigger="change"
+  hx-target="#persons"
+  hx-swap="innerHTML"
+  style="padding-left: 0; width: 20%;"
+>
+  {{ select_macro(
+    "region", [
+      "Главный офис", "РЦ Юг", "РЦ Запад", "РЦ Урал", "РЦ Восток"
+      ], required=true, disabled=session["user"]["id"] != resume["user_id"], value=resume['region']
+    ) }}
+</form>
+{% endcall %}
+
+{% for items in resume_list %}
+  {% call label_macro(items[0]) %}
+    {{ items[1] }}
+  {% endcall %}
+{% endfor %}
+
+{% if session['user']['id'] == resume['user_id'] and session['user']['role'] == 'user' %}
+  {{ action_group_macro("persons", resume['id']|string, upload=True, target="persons") }}
+{% endif %}
+
+{% endmacro %}

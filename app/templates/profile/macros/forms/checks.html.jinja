@@ -1,0 +1,48 @@
+{% macro check_form_macro(id, check = {}, needs_id = true) %}
+
+{% from "elements.html.jinja" import label_macro, input_macro, textarea_macro, select_macro, btn_group_macro %}
+{% set options = ["СОГЛАСОВАНО", "СОГЛАСОВАНО С КОММЕНТАРИЕМ", "ОТКАЗАНО В СОГЛАСОВАНИИ"] %}
+
+{% set check_items = {
+    'workplace': ["Проверка по местам работы", check['workplace']],
+    'document': ["Проверка документов", check['document']],
+    'inn': ["Проверка ИНН", check['inn']],
+    'debt': ["Проверка задолженностей", check['debt']],
+    'bankruptcy': ["Проверка банкротства", check['bankruptcy']],
+    'bki': ["Проверка БКИ", check['bki']],
+    'courts': ["Проверка судебных дел", check['courts']],
+    'affilation': ["Проверка аффилированности", check['affilation']],
+    'terrorist': ["Проверка террористов", check['terrorist']],
+    'mvd': ["Проверка в розыск", check['mvd']],
+    'internet': ["Проверка в открытых источниках", check['internet']],
+    'cronos': ["Проверка в Кронос", check['cronos']],
+    'additional': ["Дополнительная информация", check['additional']],
+    'comment': ["Комментарии", check['comment']],
+} %}
+
+<form 
+  class="form form-check" 
+  hx-post="{{ url_for('route.post_item_id', item='checks', item_id=id) }}"
+  hx-target="#checks"
+  hx-trigger="submit"
+  hx-swap="innerHTML"
+>
+  
+  {% if needs_id %}
+    {{ input_macro("id", "id", type="hidden", value=check['id']) }}
+  {% endif %}
+
+  {% for key, value in check_items.items() %}
+    {% call label_macro(value[0]) %}
+      {{ textarea_macro(key, value[0], text=value[1]) }}
+    {% endcall %}
+  {% endfor %}
+
+
+  {% call label_macro("Результат") %}
+    {{ select_macro("conclusion", options, check['conclusion']) }}
+  {% endcall %}
+
+  {{ btn_group_macro(cancel = true, item = 'checks', id = id) }}
+</form>
+{% endmacro %}
